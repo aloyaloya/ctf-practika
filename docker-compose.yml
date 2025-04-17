@@ -1,0 +1,41 @@
+version: "3.8" # Определяем версию Docker Compose.
+
+services:
+  ctfd:
+    image: ctfd/ctfd:latest # Используем последний официальный образ CTFd.
+    container_name: ctfd_app # Указываем имя контейнера для приложения.
+    ports:
+      - "80:8000" # Пробрасываем порт 8000 контейнера на порт 80 хоста.
+    environment:
+      - DATABASE_URL=mysql+pymysql://ctfd_user:secure_password@db/ctfd # URL для подключения к базе данных.
+      - REDIS_URL=redis://redis:6379/0 # URL для подключения к Redis.
+      - SECRET_KEY=secret_key # Секретный ключ для приложения.
+      - UPLOAD_FOLDER=/var/uploads # Папка для загрузки файлов внутри контейнера.
+      - LOG_FOLDER=/var/logs # Папка для логов внутри контейнера.
+    volumes:
+      - ./ctfd_data/uploads:/var/uploads # Локальная папка монтируется как папка для загрузок.
+      - ./ctfd_data/logs:/var/logs # Локальная папка монтируется как папка для логов.
+    depends_on:
+      - db # Контейнер зависит от сервиса db.
+      - redis # Контейнер зависит от сервиса redis.
+    restart: always # Перезапуск контейнера в случае его остановки.
+
+  db:
+    image: mysql:8.0 # Используем образ MySQL версии 8.0.
+    container_name: ctfd_db # Указываем имя контейнера для базы данных.
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secure_password # Пароль для пользователя root.
+      MYSQL_DATABASE: ctfd # Имя создаваемой базы данных.
+      MYSQL_USER: ctfd_user # Имя пользователя для подключения к базе.
+      MYSQL_PASSWORD: secure_password # Пароль для пользователя базы.
+    volumes:
+      - ./db_data:/var/lib/mysql # Монтируем локальную папку для хранения данных MySQL.
+    restart: always # Перезапуск контейнера в случае его остановки.
+
+  redis:
+    image: redis:7 # Используем образ Redis версии 7.
+    container_name: ctfd_redis # Указываем имя контейнера для Redis.
+    volumes:
+      - ./redis_data:/data # Монтируем локальную папку для данных Redis.
+    command: ["redis-server", "--appendonly", "yes"] # Включаем режим appendonly для сохранения данных.
+    restart: always # Перезапуск контейнера в случае его остановки.

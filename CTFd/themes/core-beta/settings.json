@@ -1,0 +1,23 @@
+{
+    "primary": "#4b0078",
+    "secondary": "#2e003e",
+    "background": "#1a001f",
+    "text": "#ffffff",
+    "accent": "#ae81ff",
+    "button": "#5900b3",
+    "navbar": {
+      "background": "#4b0078",
+      "text": "#ffffff",
+      "hover": "#ae81ff"
+    },
+    "footer": {
+      "background": "#2e003e",
+      "text": "#ffffff"
+    },
+    "decorative": {
+      "ball1": "rgba(75, 0, 120, 0.8)",
+      "ball2": "rgba(75, 0, 120, 0.6)",
+      "ball3": "rgba(75, 0, 120, 0.7)"
+    }
+  }
+  
